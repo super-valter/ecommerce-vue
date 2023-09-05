@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-container class="bg-surface-variant my-6">
-      <v-row>
+    <v-container class="my-6">
+      <v-row class="mb-2">
         <v-col cols="12">
           <h1>{{ currentRoute }} <span class="text-capitalize">{{ categorieProduct }}</span></h1>
         </v-col>
@@ -15,6 +15,7 @@
           <ProductIten :product="product" />
         </v-col>
       </v-row>
+      <v-pagination v-if="totalProduct > 20" v-model="pagination" :length="qtdPagination" rounded="circle" @click="next" />
     </v-container>
   </div>
 </template>
@@ -27,16 +28,25 @@ import store from "@/store/store";
 import router from '@/router';
 
 let products = ref<IProducts[]>();
-const routerSite = ref(router)
-let categorieProduct = ref<string[] | string>()
-let isLoding = ref<boolean>(true)
+const routerSite = ref(router);
+let categorieProduct = ref<string[] | string>();
+let isLoding = ref<boolean>(true);
+let pagination = ref<number>(1);
+let totalProduct = ref(computed(() => store.getters['totalProdutos']));
+let qtdPagination = ref(computed(() => totalProduct.value / 20));
 
 const currentRoute = computed(() => {
   searchCartProducts();
   return routerSite.value.currentRoute.name
 })
 
-async function searchCartProducts() {
+function next() {
+    let pagePagination = ref(computed(() => (pagination.value - 1) * 20));
+    searchCartProducts(pagePagination.value);
+}
+
+
+async function searchCartProducts(pagePagination: number = 0) {  
   isLoding.value = true
   let productCategory = ref<string[] | string>(routerSite.value.currentRoute.params['categoria']);
   let productSearch = ref<string[] | string>(routerSite.value.currentRoute.params['serach']);
@@ -49,10 +59,10 @@ async function searchCartProducts() {
 
   if (productCategory.value == undefined) {
     categorieProduct.value = ''
-    await store.dispatch('setProducts');
+    await store.dispatch('setProducts', pagePagination);
     isLoding.value = false
-
   }
+
   if (productSearch.value != undefined) {
     categorieProduct.value = productSearch.value.toString().replace('-', ' ');
     await store.dispatch('setProductsSearch', productSearch.value);

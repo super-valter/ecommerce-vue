@@ -2,12 +2,12 @@
     <v-toolbar color="primary">
         <v-container class="my-6">
             <v-row>
-                <v-col>
+                <v-col cols="2">
                     <v-btn class="text-none" stacked to="/">
                         <v-icon>mdi-home</v-icon>
                     </v-btn>
                 </v-col>
-                <v-col>
+                <v-col cols="10" md="4">
                     <v-form ref="formSearch" @submit.prevent="validate" v-model="form">
                         <v-text-field autocomplete="off" prepend-icon="mdi-magnify" hint="minimo de 4 caracteres" outlined
                             dense validate-on-blur label="o que você procura" v-model="searchProducts"
@@ -74,11 +74,13 @@ onMounted(async () => {
 });
 
 function cartDrawer() {
+    if (totalCart.value.length === 0) return
     let drawerTemp = !drawerCart.value
     commit('drawerCart', drawerTemp);
 }
 
 function favoriteDrawer() {
+    if (totalFavorite.value.length === 0) return
     let drawerTemp = !drawerFavoritos.value
     commit('drawerFavoritos', drawerTemp);
 }

@@ -1,5 +1,5 @@
 import { DiscountPercentage } from '@/filters/DiscountPercentage';
-import { IProducts, IProductsCart } from '@/interfaces/IProducts';
+import { IProducts, IProductsCart, IReponseApiProdutos } from '@/interfaces/IProducts';
 import Products from '@/services/Products';
 import Vuex from 'vuex'
 
@@ -9,12 +9,16 @@ export default new Vuex.Store({
 		listProductFavorite: JSON.parse(localStorage.getItem('Favorite') || '[]'),
 		cartProducts: JSON.parse(localStorage.getItem('cartProdutosVisie') || '[]'),
 		products: {} as IProducts[],
+		productsTotal: {} as number,
+		productsSkip: {} as number,
 		drawerCart: false,
 		drawerFavoritos: false
 	},
 	mutations: {
-		['setProducts'](state, products) {
-			state.products = [...products]
+		['setProducts'](state, products: IReponseApiProdutos) {
+			state.products = [...products.products]
+			state.productsTotal = products.total
+			state.productsSkip = products.skip
 		},
 		['addFavorite'](state, product: IProducts) {
 			/* Somente id */
@@ -93,10 +97,13 @@ export default new Vuex.Store({
 		totalCartitens(state) {
 			return state.cartProducts.reduce((total: number, products: IProductsCart) => total + products.qtd, 0)
 		},
+		totalProdutos(state) {
+			return state.productsTotal
+		},
 	},
 	actions: {
-		async setProducts({ commit }) {
-			const reponseApi = await Products.productsAll();
+		async setProducts({ commit }, setProducts: number) {
+			const reponseApi = await Products.productsAll(setProducts);
 			commit("setProducts", reponseApi);
 		},
 		async setProductsCategory({ commit }, searchLProduct: string) {

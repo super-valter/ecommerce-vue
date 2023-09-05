@@ -7,9 +7,7 @@
       max-width="600"
     >
       <div
-        class="text-primary bg-white ma-2 py-1 px-3 rounded text-caption position-discount-percentage"
-        
-      >
+        class="text-primary bg-white ma-2 py-1 px-3 rounded text-caption position-discount-percentage">
         -{{ productItem.discountPercentage }}%
       </div>
       <v-img :aspect-ratio="9 / 8" cover :src="productItem.thumbnail" />
@@ -67,7 +65,6 @@
 import { DiscountPercentage } from "@/filters/DiscountPercentage";
 import { MoneyFilter } from "@/filters/money";
 import type { IProducts } from "@/interfaces/IProducts";
-/* import router from "@/router"; */
 import store from "@/store/store";
 import { ref } from "vue";
 
@@ -87,11 +84,6 @@ function productFavoriteDefine(products: IProducts, status: boolean) {
   if (!status) commit("addFavorite",products);
   if (status) commit("removeFavorite", products);
 }
-
-/* function productinterna() {
-  const routerNext = `/item/${productItem.id}`
-  router.push(routerNext)  
-} */
 
 function addCart() {
   store.dispatch('addCart', productItem);

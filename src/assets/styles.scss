@@ -10,5 +10,19 @@
 }
 .v-toolbar__content{
     height: 100px !important;
+    @media only screen and (max-width: 942px) {
+        height: 200px !important;
+
+    }
 }
-          
+
+.v-btn--disabled{
+    display: none;
+}
+.v-container{
+    max-width: 900px;
+}
+
+.pointer{
+    cursor: pointer;
+}

@@ -27,4 +27,11 @@ export interface breadcrumbs {
     title: string,
     disabled: boolean,
     href: string
-  }
+}
+
+export interface IReponseApiProdutos{
+    products: Array<IProducts>;
+    total: number
+    skip: number
+    limit: number
+}

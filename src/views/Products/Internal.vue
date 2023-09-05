@@ -6,11 +6,7 @@
           <v-breadcrumbs :items="breadcrumbsItem" divider="/" class="text-capitalize" />
         </v-col>
         <v-col cols="12" sm="6" md="8">
-          <v-carousel hide-delimiter-background delimiter-icon="mdi-square" height="350">
-            <v-carousel-item v-for="(img, index) in imgTeste" :key="index" class="bg-black">
-              <v-img :src="img" :aspect-ratio="1" cover></v-img>
-            </v-carousel-item>
-          </v-carousel>
+          <Carousel v-if="product?.images" :imagesCarousel="product?.images" />
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-row>
@@ -50,7 +46,8 @@
               </v-btn>
             </v-col>
             <v-col cols="12" class="pt-1">
-              <v-btn class="text-center bg-blue-grey-lighten-1" prepend-icon="mdi-heart" block @click="addCart()">
+              <v-btn class="text-center" prepend-icon="mdi-heart" block
+                @click="productFavoriteDefine(productFavorite)" :class="productFavorite ? 'text-green' : 'bg-blue-grey-lighten-1'">
                 Favorito
               </v-btn>
             </v-col>
@@ -70,7 +67,7 @@
             Categoria {{ product?.category }}
           </h6>
           <v-row class="mt-2">
-            <v-col cols="12" sm="6" md="4" v-for="product in productCategorie" :key="product.id" >
+            <v-col cols="12" sm="6" md="4" v-for="product in productCategorie" :key="product.id">
               <ProductIten :product="product" />
             </v-col>
           </v-row>
@@ -89,10 +86,13 @@ import { MoneyFilter } from "@/filters/money";
 import { DiscountPercentage } from "@/filters/DiscountPercentage";
 import store from "@/store/store";
 import ProductIten from "@/components/ProductIten.vue";
+import Carousel from "@/components/Carousel.vue"
 
+const { commit, state } = store;
 let product = ref<IProducts>();
 let productCategorie = ref<IProducts[]>();
 let rating = ref<number>();
+let productFavorite = ref<boolean>(false);
 
 const breadcrumbsItem = ref<Array<breadcrumbs>>([
   {
@@ -110,30 +110,45 @@ const breadcrumbsItem = ref<Array<breadcrumbs>>([
     disabled: true,
     href: '',
   },
-])
-
-const imgTeste = ref(
-  ["https://i.dummyjson.com/data/products/1/1.jpg", "https://i.dummyjson.com/data/products/1/2.jpg", "https://i.dummyjson.com/data/products/1/3.jpg", "https://i.dummyjson.com/data/products/1/4.jpg", "https://i.dummyjson.com/data/products/1/thumbnail.jpg"]
-)
+]);
 
 onMounted(async () => {
-  /* Produto */
   const productId = Number(router.currentRoute.value.params.id);
   const reponseApi = await ref<IProducts>(await Products.productsitem(productId));
+  /* Produto */
   product.value = reponseApi.value;
   rating.value = product.value.rating;
 
   breadcrumbsItem.value[1].title = product.value.category.replace('-', ' ')
   breadcrumbsItem.value[1].href = `/categoria/${product.value.category}`
   breadcrumbsItem.value[2].title = product.value.title;
-
   /* Produtos Categoria */
   const categorieId = ref<string>(product.value.category);
   const categorieApi = ref<IProducts[]>(await Products.productCategories(categorieId.value));
-  productCategorie.value = [...categorieApi.value];
+  filterRemoveProduct(categorieApi.value)
+  /*  */
+  const listProductFavoriteStorage = state.listProductFavoriteId.filter((value: number) => value === product.value?.id)
+  if (listProductFavoriteStorage.length) productFavorite.value = true;
 });
 
 function addCart() {
   store.dispatch('addCart', product.value);
+}
+
+function productFavoriteDefine(status: boolean) {
+  productFavorite.value = !productFavorite.value; 
+  if (!status) commit("addFavorite", product.value);
+  if (status) commit("removeFavorite", product.value);
+}
+
+function filterRemoveProduct(produtcts: IProducts[]){
+  const checkProduto = produtcts.filter((productFilter: IProducts) =>{
+    return productFilter.id != product.value?.id
+  })
+  if(checkProduto.length === 4){
+    productCategorie.value = checkProduto.slice(0, -1)
+    return
+  } 
+  productCategorie.value = checkProduto
 }
 </script>

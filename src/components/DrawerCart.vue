@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-model="drawer" location="right" width="500" class="pa-5">
+    <v-navigation-drawer v-model="drawer" location="right" width="500" class="pa-5" temporary disable-resize-watcher>
         <v-btn @click="cartDrawer" prepend-icon="mdi-close" elevation="0" class="mb-2">
             Fechar
         </v-btn>
@@ -7,18 +7,21 @@
             <v-col v-for="product in productsListCart" :key="product" cols="12" class="mb-5">
                 <v-row>
                     <v-col>
-                        <v-img :src="product.thumbnail" :width="200" :height="120" aspect-ratio="1/1"></v-img>
+                        <v-img :src="product.thumbnail" :width="200" :height="120" aspect-ratio="1/1" @click="productinterna(product.id)" class="pointer"></v-img>
                     </v-col>
                     <v-col>
                         <div class="font-weight-light text-primary">
                             {{ product.brand }}
                         </div>
 
-                        <h3 class="font-weight-light mb-2" @click="productinterna(product.id)">
+                        <h3 class="font-weight-light pointer" @click="productinterna(product.id)">
                             {{ product.title }}
                         </h3>
-
-                        <div class="font-weight-light mb-2">
+                        Valor: {{ MoneyFilter(product.price) }}
+                        <div class="font-weight-light">
+                            Quantidade: {{ product.qtd }}
+                        </div>
+                        <div class="font-weight-light pt-0 mb-2">
                             <span class="text-decoration-line-through text-disabled">
                                 {{ MoneyFilter(product.price * product.qtd) }}</span>
                             -
@@ -28,9 +31,6 @@
                                     product.discountPercentage
                                 ))
                             }}
-                        </div>
-                        <div class="font-weight-light mb-2">
-                            Quantidade: {{ product.qtd }}
                         </div>
                     </v-col>
                 </v-row>
