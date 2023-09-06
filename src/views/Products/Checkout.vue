@@ -11,7 +11,7 @@
                         <v-col v-if="productsListCart.length <= 0" cols="12">
                             Sua sacola está vazia
                         </v-col>
-                        <template v-if="productsListCart.length <= 1">
+                        <template v-if="productsListCart.length > 0">
                         <v-col cols="12" v-for="product in productsListCart" :key="product.id" >
                             <ProductCheckout :product="product" />
                         </v-col>
@@ -60,7 +60,6 @@ import store from '@/store/store';
 import { computed } from 'vue';
 import { ref } from 'vue';
 import ProductCheckout from '@/components/ProductCheckout.vue';
-
 
 const productsListCart = ref(computed(() => store.state['cartProducts']));
 let totalCart = ref(computed(() => store.getters['totalCart']));

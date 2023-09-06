@@ -2,7 +2,7 @@
   <div class="fill-height">
     <v-row>
       <v-col cols="4">
-        <v-img :aspect-ratio="1 / 1" borde="1" width="120" height="120" cover :src="productItem.thumbnail" />
+        <v-img :aspect-ratio="1 / 1" borde="1" width="120" height="120" cover :src="productItem.thumbnail" @click="productinterna(productItem.id)" class="pointer" />
       </v-col>
       <v-col cols="8" class="position-relative">
         <v-btn class="mx-2 position-absolute position-btn-deletar" variant="text" icon="mdi-trash-can-outline" color="red-lighten-2" @click="cartProductRemove" />
@@ -12,10 +12,10 @@
             <v-spacer class="ma-0" />
 
           </v-col>
-          <v-col cols="12" class="pb-0">
+          <v-col cols="12" class="py-1 pointer" @click="productinterna(productItem.id)">
             {{ productItem.title }} - {{ MoneyFilter(productItem.price) }}
           </v-col>
-          <v-col>
+          <v-col cols="12" class="py-1">
             <span class="text-decoration-line-through text-disabled">
               {{ MoneyFilter(totalCart) }}</span>
             -
@@ -45,6 +45,7 @@
 import { DiscountPercentage } from "@/filters/DiscountPercentage";
 import { MoneyFilter } from "@/filters/money";
 import type { IProductsCart } from "@/interfaces/IProducts";
+import router from "@/router";
 import store from "@/store/store";
 import { computed } from "vue";
 import { ref } from "vue";
@@ -54,17 +55,21 @@ const productItem = props.product;
 const { dispatch } = store;
 let totalCart = ref(computed(() => productItem.price * productItem.qtd));
 
-function qtdCartMinus() {
+const qtdCartMinus = () : void => {
   dispatch("altQtdCartMinus", productItem.id);
 }
 
-function qtdCartPlus() {
+const qtdCartPlus = () : void => {
   dispatch("altQtdCartPlus", productItem.id);
 }
 
-function cartProductRemove() {
+const cartProductRemove = () : void => {
   dispatch('cartProductRemove', productItem.id);
 }
 
+const productinterna = (id: number) : void => {
+    const routerNext = `/item/${id}`
+    router.push(routerNext)
+}
 </script>
   

@@ -68,23 +68,23 @@ let drawerFavoritos = ref(computed(() => getters['drawerFavoritos']));
 let form = false;
 let searchProducts = ref<string>('')
 
-onMounted(async () => {
+onMounted(async () : Promise<void> => {
     const reponseApi = await Products.categories();
     categories.value = reponseApi
 });
 
-function cartDrawer() {
+const cartDrawer = () =>  {
     let drawerTemp = !drawerCart.value
     commit('drawerCart', drawerTemp);
 }
 
-function favoriteDrawer() {
+const favoriteDrawer = () : void => {    
     if (totalFavorite.value.length === 0) return
     let drawerTemp = !drawerFavoritos.value
     commit('drawerFavoritos', drawerTemp);
 }
 
-function validate() {
+const validate = () : void => {
     if (searchProducts.value.length > 4) {
         let routerNext = `/search/${searchProducts.value}`;
         router.push({ path: routerNext, query: { serach: searchProducts.value } })

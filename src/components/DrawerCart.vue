@@ -72,12 +72,12 @@ const productsListCart = ref(computed(() => store.state['cartProducts']));
 let totalCart = ref(computed((): number => store.getters['totalCart']));
 let totalCartDiscount = ref(computed((): number => store.getters['totalCartdiscount']));
 
-function cartDrawer() {
+const cartDrawer = (): void => {
     let drawerTemp = !drawer.value
     commit('drawerCart', drawerTemp);
 }
 
-function productinterna(id: number) {
+const productinterna = (id: number): void => {
     const routerNext = `/item/${id}`
     router.push(routerNext)
 }

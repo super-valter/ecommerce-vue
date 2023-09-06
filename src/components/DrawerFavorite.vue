@@ -1,6 +1,6 @@
 <template>
     <v-navigation-drawer v-model="drawer" location="right" width="500" class="pa-5"  disable-resize-watcher temporary>
-        <v-btn @click="FavoritosDrawer" prepend-icon="mdi-close" elevation="0" class="mb-2">
+        <v-btn @click="favoritosDrawer" prepend-icon="mdi-close" elevation="0" class="mb-2">
             Fechar
         </v-btn>
         <v-row>
@@ -56,11 +56,11 @@ let drawer = computed({
 });
 let productsFavorite = ref(computed(() => store.getters['searchLProductFavorite']));
 
-function FavoritosDrawer() {
+const favoritosDrawer = () : void => {
     let drawerTemp = !drawer.value
     commit('drawerFavoritos', drawerTemp);
 }
-function productinterna(id: number) {
+const productinterna = (id: number) : void => {
     const routerNext = `/item/${id}`
     router.push(routerNext)
 }

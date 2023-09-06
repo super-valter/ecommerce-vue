@@ -111,7 +111,7 @@ const breadcrumbsItem = ref<Array<breadcrumbs>>([
   },
 ]);
 
-onMounted(async () => {
+onMounted(async () : Promise<void> => {
   /* Produto */
   const productId = Number(router.currentRoute.value.params.id);
   const reponseApi = await ref<IProducts>(await Products.productsitem(productId));
@@ -127,17 +127,17 @@ onMounted(async () => {
   checkFavorite()
 });
 
-function addCart() {
+const addCart = () : void => {
   store.dispatch('addCart', product.value);
 }
 
-function productFavoriteDefine(status: boolean) {
+const productFavoriteDefine = (status: boolean) : void => {
   productFavorite.value = !productFavorite.value; 
   if (!status) commit("addFavorite", product.value);
   if (status) commit("removeFavorite", product.value);
 }
 
-function filterRemoveProduct(produtcts: IProducts[]){
+const filterRemoveProduct = (produtcts: IProducts[]) : void => {
   const checkProduto = produtcts.filter((productFilter: IProducts) => productFilter.id != product.value?.id)
   if(checkProduto.length === 4){
     productsCategorie.value = checkProduto.slice(0, -1)
@@ -146,12 +146,12 @@ function filterRemoveProduct(produtcts: IProducts[]){
   productsCategorie.value = checkProduto
 }
 
-function defineBreadCrumbs(category: string, title: string) {  
+const defineBreadCrumbs = (category: string, title: string) : void => {
   breadcrumbsItem.value[1].title = category.replace('-', ' ')
   breadcrumbsItem.value[1].href = `/categoria/${category}`
   breadcrumbsItem.value[2].title = title;
 }
-function checkFavorite(){
+const checkFavorite = () : void => {
   const listProductFavoriteStorage = state.listProductFavoriteId.filter((value: number) => value === product.value?.id)
   if (listProductFavoriteStorage.length) productFavorite.value = true;
 }

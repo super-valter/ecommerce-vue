@@ -15,7 +15,7 @@ import { onMounted } from 'vue';
 const props = defineProps<{ imagesCarousel: string[] | undefined }>();
 const imagesCarousel2 = ref();
 
-onMounted(async () => {
+onMounted(async () : Promise<void> => {
     imagesCarousel2.value = props.imagesCarousel
 });
 </script>

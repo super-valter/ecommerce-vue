@@ -39,12 +39,12 @@ const currentRoute = computed(() => {
   return routerSite.value.currentRoute.name
 })
 
-function next() {
+const next = () : void => {
     let pagePagination = ref(computed(() => (pagination.value - 1) * 20));
     searchCartProducts(pagePagination.value);
 }
 
-async function searchCartProducts(pagePagination: number = 0) {
+ const searchCartProducts = async (pagePagination: number = 0) : Promise<void> => {
   isLoding.value = true
   let productCategory = ref<string[] | string>(routerSite.value.currentRoute.params['categoria']);
   let productSearch = ref<string[] | string>(routerSite.value.currentRoute.params['serach']);
@@ -74,11 +74,11 @@ async function searchCartProducts(pagePagination: number = 0) {
   }
 }
 
-function defineNameCategorie(nameCategorie: string[] | string = ''){
+const defineNameCategorie = (nameCategorie: string[] | string = '') : void => {
   categorieProduct.value = nameCategorie.toString().replace('-', ' ');
 }
 
-function defineProducts() {  
+const defineProducts = () : void => {  
   const productsList = computed(() => store.state['products']);
   products.value = [...productsList.value];
 }

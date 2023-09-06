@@ -79,13 +79,13 @@ const listProductFavoriteStorage = state.listProductFavoriteId.filter(
 
 if (listProductFavoriteStorage.length) productFavorite.value = true;
 
-function productFavoriteDefine(products: IProducts, status: boolean) {
+const productFavoriteDefine = (products: IProducts, status: boolean) : void => {
   productFavorite.value = !productFavorite.value;
   if (!status) commit("addFavorite",products);
   if (status) commit("removeFavorite", products);
 }
 
-function addCart() {
+const addCart = () : void => {
   store.dispatch('addCart', productItem);
 }
 </script>
