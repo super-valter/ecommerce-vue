@@ -91,6 +91,7 @@ import { computed } from "vue";
 
 const { commit, state } = store;
 let product = ref<IProducts>();
+//  ref({} as IProducts);
 let productsCategorie = ref<IProducts[]>();
 let productRating = ref<number>();
 let productFavorite = ref<boolean>(false);
