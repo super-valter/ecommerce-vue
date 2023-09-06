@@ -21,7 +21,7 @@
               </h1>
             </v-col>
             <v-col cols="12" class="py-0">
-              <v-rating v-model="rating" half-increments readonly color="primary" class="pl-0"></v-rating>
+              <v-rating v-model="productRating" half-increments readonly color="primary" class="pl-0"></v-rating>
             </v-col>
             <v-col cols="12" class="py-0">
               <h4 class="text-decoration-line-through text-disabled mb-1">
@@ -46,7 +46,7 @@
               </v-btn>
             </v-col>
             <v-col cols="12" class="pt-1">
-              <v-btn class="text-center" prepend-icon="mdi-heart" block
+              <v-btn class="text-center" prepend-icon="mdi-heart" block elevation="0"
                 @click="productFavoriteDefine(productFavorite)" :class="productFavorite ? 'text-green' : 'bg-blue-grey-lighten-1'">
                 Favorito
               </v-btn>
@@ -67,7 +67,7 @@
             Categoria {{ product?.category }}
           </h6>
           <v-row class="mt-2">
-            <v-col cols="12" sm="6" md="4" v-for="product in productCategorie" :key="product.id">
+            <v-col cols="12" sm="6" md="4" v-for="product in productsCategorie" :key="product.id">
               <ProductIten :product="product" />
             </v-col>
           </v-row>
@@ -90,10 +90,9 @@ import Carousel from "@/components/Carousel.vue"
 
 const { commit, state } = store;
 let product = ref<IProducts>();
-let productCategorie = ref<IProducts[]>();
-let rating = ref<number>();
+let productsCategorie = ref<IProducts[]>();
+let productRating = ref<number>();
 let productFavorite = ref<boolean>(false);
-
 const breadcrumbsItem = ref<Array<breadcrumbs>>([
   {
     title: 'Produtos',
@@ -113,22 +112,19 @@ const breadcrumbsItem = ref<Array<breadcrumbs>>([
 ]);
 
 onMounted(async () => {
+  /* Produto */
   const productId = Number(router.currentRoute.value.params.id);
   const reponseApi = await ref<IProducts>(await Products.productsitem(productId));
-  /* Produto */
   product.value = reponseApi.value;
-  rating.value = product.value.rating;
+  productRating.value = product.value.rating;
+  defineBreadCrumbs(product.value.category, product.value.title)
 
-  breadcrumbsItem.value[1].title = product.value.category.replace('-', ' ')
-  breadcrumbsItem.value[1].href = `/categoria/${product.value.category}`
-  breadcrumbsItem.value[2].title = product.value.title;
   /* Produtos Categoria */
   const categorieId = ref<string>(product.value.category);
-  const categorieApi = ref<IProducts[]>(await Products.productCategories(categorieId.value));
+  const categorieApi = ref<IProducts[]>(await Products.productsCategories(categorieId.value));  
   filterRemoveProduct(categorieApi.value)
-  /*  */
-  const listProductFavoriteStorage = state.listProductFavoriteId.filter((value: number) => value === product.value?.id)
-  if (listProductFavoriteStorage.length) productFavorite.value = true;
+
+  checkFavorite()
 });
 
 function addCart() {
@@ -142,13 +138,21 @@ function productFavoriteDefine(status: boolean) {
 }
 
 function filterRemoveProduct(produtcts: IProducts[]){
-  const checkProduto = produtcts.filter((productFilter: IProducts) =>{
-    return productFilter.id != product.value?.id
-  })
+  const checkProduto = produtcts.filter((productFilter: IProducts) => productFilter.id != product.value?.id)
   if(checkProduto.length === 4){
-    productCategorie.value = checkProduto.slice(0, -1)
+    productsCategorie.value = checkProduto.slice(0, -1)
     return
   } 
-  productCategorie.value = checkProduto
+  productsCategorie.value = checkProduto
+}
+
+function defineBreadCrumbs(category: string, title: string) {  
+  breadcrumbsItem.value[1].title = category.replace('-', ' ')
+  breadcrumbsItem.value[1].href = `/categoria/${category}`
+  breadcrumbsItem.value[2].title = title;
+}
+function checkFavorite(){
+  const listProductFavoriteStorage = state.listProductFavoriteId.filter((value: number) => value === product.value?.id)
+  if (listProductFavoriteStorage.length) productFavorite.value = true;
 }
 </script>

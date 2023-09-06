@@ -15,9 +15,10 @@
 
     }
 }
-
-.v-btn--disabled{
-    display: none;
+.v-pagination__list {
+    .v-btn--disabled{
+        display: none;
+    }
 }
 .v-container{
     max-width: 900px;

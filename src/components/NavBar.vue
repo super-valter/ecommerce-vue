@@ -30,13 +30,13 @@
                     </v-menu>
                 </v-col>
                 <v-col class="text-right">
-                    <v-btn class="text-none" stacked @click.stop="favoriteDrawer">
+                    <v-btn class="text-none" stacked @click.stop="favoriteDrawer" :disabled="totalFavorite.length === 0">
                         <v-badge :content="totalFavorite.length" color="error">
                             <v-icon>mdi-heart</v-icon>
                         </v-badge>
                     </v-btn>
 
-                    <v-btn class="text-none" stacked @click="cartDrawer">
+                    <v-btn class="text-none" stacked @click="cartDrawer" :disabled="totalCart.length === 0">
                         <v-badge :content="totalCart.length" color="error">
                             <v-icon>mdi-cart</v-icon>
                         </v-badge>
@@ -74,7 +74,6 @@ onMounted(async () => {
 });
 
 function cartDrawer() {
-    if (totalCart.value.length === 0) return
     let drawerTemp = !drawerCart.value
     commit('drawerCart', drawerTemp);
 }

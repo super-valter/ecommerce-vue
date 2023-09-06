@@ -69,9 +69,8 @@ let drawer = computed({
 })
 
 const productsListCart = ref(computed(() => store.state['cartProducts']));
-
-let totalCart = ref(computed(() => store.getters['totalCart']));
-let totalCartDiscount = ref(computed(() => store.getters['totalCartdiscount']));
+let totalCart = ref(computed((): number => store.getters['totalCart']));
+let totalCartDiscount = ref(computed((): number => store.getters['totalCartdiscount']));
 
 function cartDrawer() {
     let drawerTemp = !drawer.value

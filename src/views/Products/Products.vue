@@ -34,7 +34,6 @@ let isLoding = ref<boolean>(true);
 let pagination = ref<number>(1);
 let totalProduct = ref(computed(() => store.getters['totalProdutos']));
 let qtdPagination = ref(computed(() => totalProduct.value / 20));
-
 const currentRoute = computed(() => {
   searchCartProducts();
   return routerSite.value.currentRoute.name
@@ -45,30 +44,41 @@ function next() {
     searchCartProducts(pagePagination.value);
 }
 
-
-async function searchCartProducts(pagePagination: number = 0) {  
+async function searchCartProducts(pagePagination: number = 0) {
   isLoding.value = true
   let productCategory = ref<string[] | string>(routerSite.value.currentRoute.params['categoria']);
   let productSearch = ref<string[] | string>(routerSite.value.currentRoute.params['serach']);
 
   if (productCategory.value != undefined) {
-    categorieProduct.value = productCategory.value.toString().replace('-', ' ');
     await store.dispatch('setProductsCategory', productCategory.value);
     isLoding.value = false
-  }
-
-  if (productCategory.value == undefined) {
-    categorieProduct.value = ''
-    await store.dispatch('setProducts', pagePagination);
-    isLoding.value = false
+    defineNameCategorie(productCategory.value)
+    defineProducts()
+    return
   }
 
   if (productSearch.value != undefined) {
-    categorieProduct.value = productSearch.value.toString().replace('-', ' ');
     await store.dispatch('setProductsSearch', productSearch.value);
     isLoding.value = false
+    defineNameCategorie(productSearch.value)
+    defineProducts()
+    return
   }
 
+  if (productCategory.value == undefined) {
+    await store.dispatch('setProducts', pagePagination);
+    isLoding.value = false
+    defineNameCategorie()
+    defineProducts()
+    return
+  }
+}
+
+function defineNameCategorie(nameCategorie: string[] | string = ''){
+  categorieProduct.value = nameCategorie.toString().replace('-', ' ');
+}
+
+function defineProducts() {  
   const productsList = computed(() => store.state['products']);
   products.value = [...productsList.value];
 }

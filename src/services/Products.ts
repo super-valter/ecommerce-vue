@@ -18,11 +18,11 @@ class Products{
 
 
     static async productAllSearch(serach: string, skip: number = 0) {
-        const response = await http.get(`/search?q=${serach}?limit=20&skip=${skip}`);
+        const response = await http.get(`/search?q=${serach}&limit=20&skip=${skip}`);
         return response.data;
     }
 
-    static async productCategories(categories: string) {
+    static async productsCategories(categories: string) {
         const response = await http.get(`/category/${categories}?limit=4`);
         return response.data.products;
     }
