@@ -33,7 +33,7 @@
           }}
         </div>
         <div class="d-flex">
-          <v-btn size="small" variant="outlined" class="text-caption" :to="`/item/${productItem.id}`" prepend-icon="mdi-plus">
+          <v-btn size="small" variant="outlined" class="text-caption" @click="productinterna(productItem.id)" prepend-icon="mdi-plus">
             Mais Detalhes
           </v-btn>
           <v-spacer />
@@ -65,6 +65,7 @@
 import { DiscountPercentage } from "@/filters/DiscountPercentage";
 import { MoneyFilter } from "@/filters/money";
 import type { IProducts } from "@/interfaces/IProducts";
+import router from "@/router";
 import store from "@/store/store";
 import { ref } from "vue";
 
@@ -87,5 +88,9 @@ const productFavoriteDefine = (products: IProducts, status: boolean) : void => {
 
 const addCart = () : void => {
   store.dispatch('addCart', productItem);
+}
+const productinterna = (id: number) : void => {
+    const routerNext = `/item/${id}`
+    router.push(routerNext)
 }
 </script>

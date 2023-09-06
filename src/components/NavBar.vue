@@ -85,7 +85,7 @@ const favoriteDrawer = () : void => {
 }
 
 const validate = () : void => {
-    if (searchProducts.value.length > 4) {
+    if (searchProducts.value.length >= 4) {
         let routerNext = `/search/${searchProducts.value}`;
         router.push({ path: routerNext, query: { serach: searchProducts.value } })
     }

@@ -11,7 +11,7 @@
         <v-col cols="12" sm="6" md="4">
           <v-row>
             <v-col cols="12" class="pb-0">
-              <h3 class="font-weight-regular text-capitalize">
+              <h3 class="font-weight-regular text-capitalize"> {{ productId }}
                 <span>{{ product?.category.replace('-', ' ') }}</span> / {{ product?.brand }}
               </h3>
             </v-col>
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import router from "@/router";
 import Products from "@/services/Products";
 import type { IProducts, breadcrumbs } from "@/interfaces/IProducts";
@@ -87,6 +87,7 @@ import { DiscountPercentage } from "@/filters/DiscountPercentage";
 import store from "@/store/store";
 import ProductIten from "@/components/ProductIten.vue";
 import Carousel from "@/components/Carousel.vue"
+import { computed } from "vue";
 
 const { commit, state } = store;
 let product = ref<IProducts>();
@@ -111,21 +112,26 @@ const breadcrumbsItem = ref<Array<breadcrumbs>>([
   },
 ]);
 
-onMounted(async () : Promise<void> => {
-  /* Produto */
-  const productId = Number(router.currentRoute.value.params.id);
-  const reponseApi = await ref<IProducts>(await Products.productsitem(productId));
+
+const productId =  ref(computed(() => {
+  const idProduct = Number(router.currentRoute.value.params.id)
+  setProducts(idProduct)  
+  return idProduct
+}));
+
+const setProducts = async (idProduct: number) : Promise<void> => {
+  const reponseApi = await ref<IProducts>(await Products.productsitem(idProduct));
   product.value = reponseApi.value;
   productRating.value = product.value.rating;
   defineBreadCrumbs(product.value.category, product.value.title)
-
-  /* Produtos Categoria */
-  const categorieId = ref<string>(product.value.category);
-  const categorieApi = ref<IProducts[]>(await Products.productsCategories(categorieId.value));  
-  filterRemoveProduct(categorieApi.value)
-
   checkFavorite()
-});
+  setProductsCategory(product.value.category)
+}
+
+const setProductsCategory = async (category : string) : Promise<void> => {
+  const categorieApi = ref<IProducts[]>(await Products.productsCategories(category));  
+  filterRemoveProduct(categorieApi.value)
+}
 
 const addCart = () : void => {
   store.dispatch('addCart', product.value);
@@ -152,6 +158,7 @@ const defineBreadCrumbs = (category: string, title: string) : void => {
   breadcrumbsItem.value[2].title = title;
 }
 const checkFavorite = () : void => {
+  productFavorite.value = false;
   const listProductFavoriteStorage = state.listProductFavoriteId.filter((value: number) => value === product.value?.id)
   if (listProductFavoriteStorage.length) productFavorite.value = true;
 }
