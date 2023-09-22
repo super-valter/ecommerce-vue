@@ -7,34 +7,60 @@ export const http = axios.create({
 class Products{
 
     static async productsAll(skip: number = 0) {
+        try{
         const response = await http.get(`?limit=20&skip=${skip}`);
         return response.data;
+        } catch (error) {
+            console.log('===', error);
+            
+        }
     }
 
     static async productAllCategories(categories: string, skip: number = 0) {
-        const response = await http.get(`/category/${categories}?limit=20&skip=${skip}`);
-        return response.data;
+        try {
+            const response = await http.get(`/category/${categories}?limit=20&skip=${skip}`);
+            return response.data;            
+        } catch (error) {
+            console.log();            
+        }
     }
 
 
     static async productAllSearch(serach: string, skip: number = 0) {
-        const response = await http.get(`/search?q=${serach}&limit=20&skip=${skip}`);
-        return response.data;
+        try {
+            const response = await http.get(`/search?q=${serach}&limit=20&skip=${skip}`);
+            return response.data;            
+        } catch (error) {
+            console.log();            
+        }
     }
 
     static async productsCategories(categories: string) {
-        const response = await http.get(`/category/${categories}?limit=4`);
-        return response.data.products;
+        try {
+            const response = await http.get(`/category/${categories}?limit=4`);
+            return response.data.products;            
+        } catch (error) {
+            console.log();
+        }
     }
 
     static async productsitem(id: number) {
-        const response = await http.get(`/${id}`);        
-        return response.data;
+        try {
+            const response = await http.get(`/${id}`);        
+            return response.data;            
+        } catch (error) {
+            console.log();
+                        
+        }
     }
 
     static async categories() {
-        const response = await http.get(`/categories`);        
-        return response.data;
+        try {
+            const response = await http.get(`/categories`);        
+            return response.data;            
+        } catch (error) {
+            console.log();            
+        }
     }
 
 }

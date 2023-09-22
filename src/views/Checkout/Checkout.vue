@@ -36,7 +36,7 @@
                                 deconto de {{ MoneyFilter(valueDiscount) }}
                             </div>
                         </v-col>
-                        <v-col cols="12">
+                        <v-col cols="12" v-if="productsListCart.length > 0">
                             <v-btn class="text-center bg-green" prepend-icon="mdi-cart" block>
                                 Finalizar pedido
                             </v-btn>

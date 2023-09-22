@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container class="my-6">
+    <v-container class="my-6" id="topPage">
       <v-row class="mb-2">
         <v-col cols="12">
           <h1>{{ currentRoute }} <span class="text-capitalize">{{ categorieProduct }}</span></h1>
@@ -15,72 +15,78 @@
           <ProductIten :product="product" />
         </v-col>
       </v-row>
-      <v-pagination v-if="totalProduct > 20" v-model="pagination" :length="qtdPagination" rounded="circle" @click="next" />
+      <v-pagination v-if="totalProduct > 20" v-model="pagination" :length="qtdPagination" rounded="circle"
+        @click="paginationState" />
     </v-container>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from "vue";
-import type { IProducts } from "@/interfaces/IProducts";
+import type { IProducts, IReponseApiProdutos } from "@/interfaces/IProducts";
 import ProductIten from "@/components/ProductIten.vue"
-import store from "@/store/store";
 import router from '@/router';
+import Products from '@/services/Products';
 
 let products = ref<IProducts[]>();
 const routerSite = ref(router);
 let categorieProduct = ref<string[] | string>();
 let isLoding = ref<boolean>(true);
 let pagination = ref<number>(1);
-let totalProduct = ref(computed(() => store.getters['totalProdutos']));
+let totalProduct = ref(0);
 let qtdPagination = ref(computed(() => totalProduct.value / 20));
 const currentRoute = computed(() => {
-  searchCartProducts();
+  searchListProducts();
   return routerSite.value.currentRoute.name
 })
 
-const next = () : void => {
-    let pagePagination = ref(computed(() => (pagination.value - 1) * 20));
-    searchCartProducts(pagePagination.value);
+const paginationState = (): void => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  let pagePagination = ref(computed(() => (pagination.value - 1) * 20));
+  searchListProducts(pagePagination.value);
 }
 
- const searchCartProducts = async (pagePagination: number = 0) : Promise<void> => {
+const searchListProducts = async (pagePagination: number = 0): Promise<void> => {
   isLoding.value = true
   let productCategory = ref<string[] | string>(routerSite.value.currentRoute.params['categoria']);
   let productSearch = ref<string[] | string>(routerSite.value.currentRoute.params['serach']);
 
-  if (productCategory.value != undefined) {
-    await store.dispatch('setProductsCategory', productCategory.value);
-    isLoding.value = false
-    defineNameCategorie(productCategory.value)
-    defineProducts()
-    return
-  }
+  try {
 
-  if (productSearch.value != undefined) {
-    await store.dispatch('setProductsSearch', productSearch.value);
-    isLoding.value = false
-    defineNameCategorie(productSearch.value)
-    defineProducts()
-    return
-  }
+    if (productCategory.value != undefined) {
+      const reponseApi = ref<IReponseApiProdutos>(await Products.productAllCategories(productCategory.value.toString(), pagePagination));
+      totalProduct.value = reponseApi.value.total
+      products.value = [...reponseApi.value.products];
+      defineNameCategorie(productCategory.value)
+      isLoding.value = false
+      return
+    }
 
-  if (productCategory.value == undefined) {
-    await store.dispatch('setProducts', pagePagination);
-    isLoding.value = false
-    defineNameCategorie()
-    defineProducts()
-    return
+    if (productSearch.value != undefined) {
+      const reponseApi = ref<IReponseApiProdutos>(await Products.productAllSearch(productSearch.value.toString(), pagePagination));
+      totalProduct.value = reponseApi.value.total
+      products.value = [...reponseApi.value.products];
+      defineNameCategorie(productSearch.value)
+      isLoding.value = false
+      return
+    }
+
+    if (productCategory.value == undefined) {
+      const reponseApi = ref<IReponseApiProdutos>(await Products.productsAll(pagePagination));
+      totalProduct.value = reponseApi.value.total
+      products.value = [...reponseApi.value.products];
+      defineNameCategorie()
+      isLoding.value = false
+      return
+    }
+  } catch (error) {
+    console.log(error);
+
   }
 }
 
-const defineNameCategorie = (nameCategorie: string[] | string = '') : void => {
+const defineNameCategorie = (nameCategorie: string[] | string = ''): void => {
   categorieProduct.value = nameCategorie.toString().replace('-', ' ');
-}
-
-const defineProducts = () : void => {  
-  const productsList = computed(() => store.state['products']);
-  products.value = [...productsList.value];
 }
 
 </script>

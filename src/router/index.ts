@@ -26,7 +26,7 @@ const routes = [
   {
    path: '/checkout',
    name: 'Sacola de Comprar',
-   component: () => import('@/views/Products/Checkout.vue')
+   component: () => import('@/views/Checkout/Checkout.vue')
   }
 ]
 
