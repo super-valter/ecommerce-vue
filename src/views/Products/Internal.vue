@@ -41,7 +41,7 @@
               Restam {{ product?.stock }} itens
             </v-col>
             <v-col cols="12">
-              <v-btn class="text-center bg-green" prepend-icon="mdi-cart" block @click="addCart()">
+              <v-btn class="text-center bg-green" prepend-icon="mdi-cart" block @click="cartProductAdd()">
                 Comprar
               </v-btn>
             </v-col>
@@ -134,8 +134,8 @@ const setProductsCategory = async (category : string) : Promise<void> => {
   filterRemoveProduct(categorieApi.value)
 }
 
-const addCart = () : void => {
-  store.dispatch('addCart', product.value);
+const cartProductAdd = () : void => {
+  store.dispatch('cartProductAdd', product.value);
 }
 
 const productFavoriteDefine = (status: boolean) : void => {

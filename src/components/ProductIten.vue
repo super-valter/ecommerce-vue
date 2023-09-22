@@ -37,7 +37,7 @@
             Mais Detalhes
           </v-btn>
           <v-spacer />
-          <v-btn size="small" variant="outlined" class="text-caption" @click="addCart()" prepend-icon="mdi-cart-plus">
+          <v-btn size="small" variant="outlined" class="text-caption" @click="cartProductAdd()" prepend-icon="mdi-cart-plus">
             Comprar
           </v-btn>
         </div>
@@ -86,8 +86,8 @@ const productFavoriteDefine = (products: IProducts, status: boolean) : void => {
   if (status) commit("removeFavorite", products);
 }
 
-const addCart = () : void => {
-  store.dispatch('addCart', productItem);
+const cartProductAdd = () : void => {
+  store.dispatch('cartProductAdd', productItem);
 }
 const productinterna = (id: number) : void => {
     const routerNext = `/item/${id}`

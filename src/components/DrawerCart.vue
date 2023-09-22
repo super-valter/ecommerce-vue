@@ -5,7 +5,8 @@
         </v-btn>
         <v-row>
             <v-col v-for="product in productsListCart" :key="product" cols="12" class="mb-5">
-                <v-row>
+                <v-row class="position-relative">
+                    <v-btn class="mx-2 position-absolute position-btn-deletar" variant="text" icon="mdi-trash-can-outline" color="red-lighten-2" @click="cartProductRemove(product.id)" />
                     <v-col>
                         <v-img :src="product.thumbnail" :width="200" :height="120" aspect-ratio="1/1" @click="productinterna(product.id)" class="pointer"></v-img>
                     </v-col>
@@ -40,7 +41,7 @@
                 Total com desconto: {{ MoneyFilter(totalCartDiscount) }}
             </v-col>
             <v-col>
-            <v-btn class="text-center bg-green" prepend-icon="mdi-cart" to="/checkout" block >
+            <v-btn v-if="productsListCart.length > 0" class="text-center bg-green" prepend-icon="mdi-cart" to="/checkout" block >
                 Ir para a Sacola
               </v-btn>
             </v-col>
@@ -58,7 +59,7 @@ import store from '@/store/store';
 import { ref } from 'vue';
 import { computed } from 'vue';
 
-const { commit, state } = store;
+const { commit, state, dispatch } = store;
 let drawer = computed({
     get(): boolean {
         return state['drawerCart'];
@@ -80,5 +81,9 @@ const cartDrawer = (): void => {
 const productinterna = (id: number): void => {
     const routerNext = `/item/${id}`
     router.push(routerNext)
+}
+
+const cartProductRemove = (productId: number) : void =>{
+    dispatch('cartProductRemove', productId);    
 }
 </script>

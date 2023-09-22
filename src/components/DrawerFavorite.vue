@@ -5,7 +5,8 @@
         </v-btn>
         <v-row>
             <v-col v-for="product in productsFavorite" :key="product" cols="12" class="mb-5">
-                <v-row>
+                <v-row class="position-relative">
+                    <v-btn @click="removeFavorite(product)" variant="text" icon="mdi-trash-can-outline" color="red-lighten-2" elevation="0" class="mb-2 position-absolute position-btn-deletar" />
                     <v-col>
                         <v-img :src="product.thumbnail" :width="200" :height="120" aspect-ratio="1/1" class="pointer" @click="productinterna(product.id)"></v-img>
                     </v-col>
@@ -40,6 +41,7 @@
 <script lang="ts" setup>
 import { DiscountPercentage } from '@/filters/DiscountPercentage';
 import { MoneyFilter } from '@/filters/money';
+import { IProducts } from '@/interfaces/IProducts';
 import router from '@/router';
 import store from '@/store/store';
 import { ref } from 'vue';
@@ -63,5 +65,8 @@ const favoritosDrawer = () : void => {
 const productinterna = (id: number) : void => {
     const routerNext = `/item/${id}`
     router.push(routerNext)
+}
+const removeFavorite = ( product: IProducts ) : void =>{
+    commit("removeFavorite", product);
 }
 </script>

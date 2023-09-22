@@ -1,6 +1,5 @@
 import { DiscountPercentage } from '@/filters/DiscountPercentage';
-import { IProducts, IProductsCart, IReponseApiProdutos } from '@/interfaces/IProducts';
-import Products from '@/services/Products';
+import { IProducts, IProductsCart } from '@/interfaces/IProducts';
 import Vuex from 'vuex'
 
 export default new Vuex.Store({
@@ -15,11 +14,6 @@ export default new Vuex.Store({
 		drawerFavoritos: false
 	},
 	mutations: {
-		['setProducts'](state, products: IReponseApiProdutos) {
-			state.products = [...products.products]
-			state.productsTotal = products.total
-			state.productsSkip = products.skip
-		},
 		['addFavorite'](state, product: IProducts) {
 			/* Somente id */
 			state.listProductFavoriteId.push(product.id);
@@ -42,25 +36,25 @@ export default new Vuex.Store({
 			const favoriteJson = JSON.stringify(state.listProductFavorite);
 			localStorage.setItem('Favorite', favoriteJson);
 		},
-		['addCart'](state, productItem) {
+		['cartProductAdd'](state, productItem) {
 			state.cartProducts.push(productItem);
-			const favoriteJson = JSON.stringify(state.cartProducts);
-			localStorage.setItem('cartProdutosVisie', favoriteJson);
+			const cartProduct = JSON.stringify(state.cartProducts);
+			localStorage.setItem('cartProdutosVisie', cartProduct);
 		},
 		['cartProductRemove'](state, idProduct: number) {
 			state.cartProducts.splice(idProduct, 1);
-			const favoriteJson = JSON.stringify(state.listProductFavorite);
-			localStorage.setItem('cartProdutosVisie', favoriteJson);
+			const cartProduct = JSON.stringify(state.cartProducts);
+			localStorage.setItem('cartProdutosVisie', cartProduct);
 		},
 		['qtdCartPlus'](state, indexProduct: number) {
 			state.cartProducts[indexProduct].qtd++
-			const favoriteJson = JSON.stringify(state.cartProducts);
-			localStorage.setItem('cartProdutosVisie', favoriteJson);
+			const qtdCartPlus = JSON.stringify(state.cartProducts);
+			localStorage.setItem('cartProdutosVisie', qtdCartPlus);
 		},
 		['qtdCartMinus'](state, indexProduct: number) {
 			state.cartProducts[indexProduct].qtd--
-			const favoriteJson = JSON.stringify(state.cartProducts);
-			localStorage.setItem('cartProdutosVisie', favoriteJson);
+			const qtdCartMinus = JSON.stringify(state.cartProducts);
+			localStorage.setItem('cartProdutosVisie', qtdCartMinus);
 		},
 		['drawerCart'](state, stateDrawer) {
 			state.drawerCart = stateDrawer
@@ -102,19 +96,7 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
-		async setProducts({ commit }, setProducts: number) {
-			const reponseApi = await Products.productsAll(setProducts);
-			commit("setProducts", reponseApi);
-		},
-		async setProductsCategory({ commit }, searchLProduct: string) {
-			const reponseApi = await Products.productAllCategories(searchLProduct);
-			commit("setProducts", reponseApi);
-		},
-		async setProductsSearch({ commit }, category: string) {
-			const reponseApi = await Products.productAllSearch(category);
-			commit("setProducts", reponseApi);
-		},
-		addCart({ commit, state }, productItem: IProducts) {
+		cartProductAdd({ commit, state }, productItem: IProducts) {
 			const listProductS = state.cartProducts;
 			const listProduct = listProductS.filter((valor: IProductsCart) => valor.id === productItem.id);
 			const altQtdCart = listProductS.findIndex((valor: IProductsCart) => valor.id === productItem.id);
@@ -130,7 +112,7 @@ export default new Vuex.Store({
 				qtd: 1
 			}
 
-			if (listProduct.length === 0) commit("addCart", arrayProdutQtd);
+			if (listProduct.length === 0) commit("cartProductAdd", arrayProdutQtd);
 			if (listProduct.length != 0) commit("qtdCartPlus", altQtdCart);
 		},
 		altQtdCartPlus({commit, state}, idProduct: number){
